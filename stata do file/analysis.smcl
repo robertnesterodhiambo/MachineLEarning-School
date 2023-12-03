@@ -1,0 +1,216 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\neste\3D Objects\Gitrepos\MachineLEarning-School\stata do file\analysis.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 2 Dec 2023, 21:18:05
+
+{com}. oneway GDPpercapita Centralgovernmentdebttotal, tabulate
+
+    {txt}Central {c |}
+ government {c |}
+debt, total {c |}      Summary of GDP per capita
+ (% of GDP) {c |}        Mean   Std. Dev.       Freq.
+{hline 12}{c +}{hline 36}
+   33.26765 {c |}  {res} 48746.041           0           1
+  {txt} 37.72728 {c |}  {res} 47360.536           0           1
+  {txt}  39.1284 {c |}  {res} 39014.204           0           1
+  {txt} 40.93394 {c |}  {res} 39303.489           0           1
+  {txt} 41.12915 {c |}  {res} 45715.693           0           1
+  {txt}  44.0616 {c |}  {res} 38739.798           0           1
+  {txt} 44.11747 {c |}  {res} 44267.906           0           1
+  {txt} 46.05014 {c |}  {res} 39552.022           0           1
+  {txt} 46.74177 {c |}  {res} 42896.416           0           1
+  {txt} 47.20954 {c |}  {res}  41820.68           0           1
+  {txt} 47.35348 {c |}  {res} 41215.343           0           1
+  {txt} 48.24614 {c |}  {res} 40108.008           0           1
+  {txt} 52.44368 {c |}  {res} 48726.582           0           1
+  {txt} 53.86251 {c |}  {res} 49095.332           0           1
+  {txt} 55.46734 {c |}  {res} 53738.092           0           1
+  {txt} 55.65993 {c |}  {res} 54299.617           0           1
+  {txt}  56.2504 {c |}  {res} 50036.234           0           1
+  {txt} 56.53885 {c |}  {res} 52789.731           0           1
+  {txt} 56.66229 {c |}  {res} 51485.207           0           1
+  {txt} 63.81513 {c |}  {res} 53854.161           0           1
+  {txt} 75.84205 {c |}  {res} 51996.183           0           1
+  {txt} 84.96441 {c |}  {res} 52963.464           0           1
+  {txt} 89.54682 {c |}  {res} 53394.862           0           1
+  {txt} 93.64926 {c |}  {res}  54213.46           0           1
+  {txt} 95.53469 {c |}  {res} 54830.784           0           1
+  {txt}  95.7667 {c |}  {res} 55675.387           0           1
+  {txt} 96.42523 {c |}  {res} 56762.729           0           1
+  {txt} 97.69294 {c |}  {res} 58207.578           0           1
+  {txt}  98.5041 {c |}  {res} 57292.539           0           1
+  {txt} 99.06098 {c |}  {res} 59607.394           0           1
+  {txt}  100.805 {c |}  {res} 60698.011           0           1
+  {txt} 115.5976 {c |}  {res} 62866.714           0           1
+  {txt} 120.3634 {c |}  {res} 61829.846           0           1
+  {txt} 126.2436 {c |}  {res} 58451.607           0           1
+{txt}{hline 12}{c +}{hline 36}
+      Total {c |}  {res}  50633.99   7212.8197          34
+
+                        {txt}Analysis of Variance
+    Source              SS         df      MS            F     Prob > F
+{hline 72}
+Between groups     {res} 1.7168e+09     33   52024768.6
+{txt} Within groups     {res}          0      0            .
+{txt}{hline 72}
+    Total          {res} 1.7168e+09     33   52024768.6
+
+{com}. graph matrix GDPpercapita GDPpercapitagrowthannual Netinvestmentinnonfinanciala Populationgrowthannual Finalconsumptionexpenditure Inflationconsumerpricesannu Centralgovernmentdebttotal
+{res}
+{com}. arima GDPpercapita GDPpercapitagrowthannual Netinvestmentinnonfinanciala Populationgrowthannual Inflationconsumerpricesannu Finalconsumptionexpenditure Centralgovernmentdebttotal
+
+{txt}(setting optimization to BHHH)
+{res}{txt}Iteration 0:{col 16}log likelihood = {res}-311.35237{txt}  
+{res}{txt}Iteration 1:{col 16}log likelihood = {res}-311.35237{txt}  
+{res}
+{txt}ARIMA regression
+
+Sample:  {res}1989 - 2022                            {txt}Number of obs     = {res}        34
+                                                {txt}Wald chi2({res}6{txt})      =  {res}   235.57
+{txt}Log likelihood = {res}-311.3524                      {txt}Prob > chi2       =     {res}0.0000
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}      OPG
+{col 1}GDPpercapita{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}GDPpercapita {txt}{c |}
+GDPpercapi~l {c |}{col 14}{res}{space 2} 295.5297{col 26}{space 2} 577.0118{col 37}{space 1}    0.51{col 46}{space 3}0.609{col 54}{space 4}-835.3927{col 67}{space 3} 1426.452
+{txt}Netinvestm~a {c |}{col 14}{res}{space 2} 6999.046{col 26}{space 2} 2488.588{col 37}{space 1}    2.81{col 46}{space 3}0.005{col 54}{space 4} 2121.504{col 67}{space 3} 11876.59
+{txt}Population~l {c |}{col 14}{res}{space 2}-5532.972{col 26}{space 2}  6530.56{col 37}{space 1}   -0.85{col 46}{space 3}0.397{col 54}{space 4}-18332.63{col 67}{space 3}  7266.69
+{txt}Inflationc~u {c |}{col 14}{res}{space 2}-29.92486{col 26}{space 2} 412.8558{col 37}{space 1}   -0.07{col 46}{space 3}0.942{col 54}{space 4}-839.1073{col 67}{space 3} 779.2576
+{txt}Finalconsu~e {c |}{col 14}{res}{space 2}-1087.282{col 26}{space 2} 806.1676{col 37}{space 1}   -1.35{col 46}{space 3}0.177{col 54}{space 4}-2667.341{col 67}{space 3} 492.7779
+{txt}Centralgov~l {c |}{col 14}{res}{space 2}  109.197{col 26}{space 2} 44.05255{col 37}{space 1}    2.48{col 46}{space 3}0.013{col 54}{space 4} 22.85556{col 67}{space 3} 195.5384
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} 128364.4{col 26}{space 2} 63013.91{col 37}{space 1}    2.04{col 46}{space 3}0.042{col 54}{space 4} 4859.433{col 67}{space 3} 251869.4
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+      /sigma {c |}{col 14}{res}{space 2} 2294.991{col 26}{space 2} 344.6847{col 37}{space 1}    6.66{col 46}{space 3}0.000{col 54}{space 4} 1619.421{col 67}{space 3} 2970.561
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{p 0 6 0 79}Note: The test of the variance against zero is one sided, and the two-sided confidence interval is truncated at zero.{p_end}
+
+{com}. twoway (scatter GDPpercapita Populationgrowthannual) (scatter GDPpercapita Inflationconsumerpricesannu) (scatter GDPpercapitagrowthannual Populationgrowthannual)
+{res}
+{com}. twoway (scatter GDPpercapitagrowthannual Populationgrowthannual)
+{res}
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. . import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. . import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}.  import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\3D Objects\Gitrepos\MachineLEarning-School\stata do file\economicindicator.do"
+{txt}
+{com}. . import excel "C:\Users\neste\Downloads\P_Data_Extract_From_World_Development_Indicators.xlsx", sheet("Data") firstrow
+{res}{err}no; data in memory would be lost
+{res}{txt}{search r(4), local:r(4);}
+
+end of do-file
+
+{search r(4), local:r(4);}
+
+{com}. do "C:\Users\neste\AppData\Local\Temp\STD2918_000000.tmp"
+{txt}
+{com}. . browse
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. exit, clear
