@@ -1,50 +1,27 @@
-# MachineLEarning-School
-# My Machine Learning Journey
+<i>NB: in Q3 of 2023, a decade after BSE was first launched, we'll be making BSE2 available in a separate repo. BSE2 is a major refactoring and extension of the original BSE. This, the original BSE repo, will be retained for legacy and reference, and because the code is old and stable and simple; but for advanced usage BSE2 should be the preferred choice once it is available.</i>
 
-Welcome to my Machine Learning learning journey! 🚀 This README.md serves as a logbook of my experiences, challenges, and victories in the world of ML.
+BSE, The Bristol Stock Exchange, is a simple minimal simulation of a limit-order-book financial exchange, developed for teaching. The aim is to let students explore writing automated trading strategies that deal with "Level 2" market data.
 
-## About Me
-I am Robert Nester Odhiambo, a passionate learner diving into the fascinating field of Machine Learning. Join me in this exciting adventure as I explore algorithms, models, and the endless possibilities that ML offers.
+It is written in Python, is single-threaded and all in one file for ease of use by novices. The file BSEguide.pdf explains much of what is going on and includes an example programming assignment. The Wiki here on the BSE GitHub site holds a copy of the BSEguide text: it may be that the Wiki text is more up to date than the PDF file. 
 
-## Table of Contents
-- [Learning Path](#learning-path)
-- [Projects](#projects)
-- [Challenges](#challenges)
-- [Achievements](#achievements)
-- [Future Goals](#future-goals)
+The code in BSE is based on a large number of simplifying assumptions, chief of which is absolute-zero latency: if a trader issues a new quote, that gets processed by the exchange and all other traders can react to it, in zero time (i.e., before any other quote is issued). 
 
-## Learning Path
-- **Foundations:** Started with the basics of Python, mathematics, and statistics to build a strong foundation.
-- **Online Courses:** Enrolled in courses from platforms like Coursera, Udacity, and edX to learn from experts in the field.
-- **Hands-On Practice:** Engaged in practical coding exercises and projects to apply theoretical knowledge.
-- **Books:** Read influential books on ML, such as "Hands-On Machine Learning with Scikit-Learn and TensorFlow" by Aurélien Géron.
-- **Community Involvement:** Actively participated in ML communities, forums, and meetups to learn from others and share insights.
+Nevertheless, because the BSE system is stochastic it can also be used to introduce issues in the design of experiments and analysis of empirical data.
 
-## Projects
-Here are some of the projects I've worked on:
-1. [Project Name 1](link-to-project-1): Short description.
-2. [Project Name 2](link-to-project-2): Short description.
-3. ...
+Real exchanges are much much more complicated than this. 
 
-## Challenges
-Every learning journey comes with its set of challenges. Here are some I've encountered and overcome:
-1. Understanding complex algorithms and their implementations.
-2. Balancing theoretical knowledge with hands-on coding practice.
-3. ...
+If you use BSE in your work, please link back to this GitHub page for BSE so that people know where to find the original Python source-code: https://github.com/davecliff/BristolStockExchange, and please also cite the peer-reviewed paper that describes BSE:
+ 
+Cliff, D. (2018). BSE: A Minimal Simulation of a Limit-Order-Book Stock Exchange. In M. Affenzeller, et al. (Eds.), Proceedings 30th European Modeling and Simulation Symposium (EMSS 2018), pp. 194-203. DIME University of Genoa.
+ 
+Which you can download from here:
+https://research-information.bris.ac.uk/ws/portalfiles/portal/167944812/Cliff_i3M_CRC_formatted_repository.pdf
 
-## Achievements
-Celebrate the victories! Here are some milestones I've achieved:
-1. Completed [Course Name] with a distinction.
-2. Implemented [specific ML algorithm] from scratch.
-3. Published an article on [platform] about [ML topic].
+or here:
+https://arxiv.org/abs/1809.06027
 
-## Future Goals
-Looking ahead, here are my aspirations in the world of ML:
-1. Master advanced ML concepts like [specific topic].
-2. Contribute to open-source ML projects.
-3. Attend ML conferences and workshops.
 
-## Connect with Me
-Let's connect and learn together! Feel free to reach out on [LinkedIn](link-to-linkedin) or [Twitter](link-to-twitter).
+The code is open-sourced via the MIT Licence: see the LICENSE file for full text. 
+(copied from http://opensource.org/licenses/mit-license.php)
 
-Happy coding! 🤖✨
+Last update: Dave Cliff, March 23rd 2021.
