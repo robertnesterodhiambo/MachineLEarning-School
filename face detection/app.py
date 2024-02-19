@@ -13,6 +13,9 @@ def detect_faces(image_path):
     # Read the input image
     image = cv2.imread(image_path)
     
+    # Convert the image to RGB format (if not already in RGB)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
     # Detect faces in the image
     faces = detector.detect_faces(image)
     
@@ -23,7 +26,7 @@ def detect_faces(image_path):
     
     # Save the output image with bounding boxes
     output_image_path = 'static/output.jpg'
-    cv2.imwrite(output_image_path, image)
+    cv2.imwrite(output_image_path, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
     
     return output_image_path
 
