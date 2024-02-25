@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, render_template
 import cv2
 from mtcnn import MTCNN
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -14,21 +15,42 @@ def detect_faces(image_path):
     image = cv2.imread(image_path)
     
     # Convert the image to RGB format (if not already in RGB)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
     # Detect faces in the image
-    faces = detector.detect_faces(image)
+    faces = detector.detect_faces(image_rgb)
     
-    # Draw rectangles around the detected faces
+    # Extract additional information about the detected faces
+    face_details = []
     for result in faces:
         x, y, w, h = result['box']
-        cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        confidence = result['confidence']
+        keypoints = result['keypoints']
+        
+        # Additional information such as confidence score and facial keypoints
+        face_info = {
+            'box': (x, y, w, h),
+            'confidence': confidence,
+            'keypoints': keypoints
+        }
+        
+        face_details.append(face_info)
+    
+    # Draw rectangles around the detected faces
+    for face_info in face_details:
+        x, y, w, h = face_info['box']
+        cv2.rectangle(image_rgb, (x, y), (x+w, y+h), (255, 0, 0), 2)
     
     # Save the output image with bounding boxes
     output_image_path = 'static/output.jpg'
-    cv2.imwrite(output_image_path, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+    cv2.imwrite(output_image_path, cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
     
-    return output_image_path
+    # Save face details to an Excel file
+    excel_file_path = 'static/face_details.xlsx'
+    df = pd.DataFrame(face_details)
+    df.to_excel(excel_file_path, index=False)
+    
+    return output_image_path, excel_file_path
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
@@ -48,11 +70,11 @@ def upload_image():
             file_path = 'static/uploaded_image.jpg'
             file.save(file_path)
             
-            # Detect faces in the uploaded image
-            output_image_path = detect_faces(file_path)
+            # Detect faces in the uploaded image and save details to Excel
+            output_image_path, excel_file_path = detect_faces(file_path)
             
             # Display the results
-            return render_template('index.html', image_file=output_image_path)
+            return render_template('index.html', image_file=output_image_path, excel_file=excel_file_path)
 
     return render_template('index.html')
 
