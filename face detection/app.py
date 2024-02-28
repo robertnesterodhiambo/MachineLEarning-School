@@ -1,56 +1,48 @@
 import os
 from flask import Flask, request, render_template
 import cv2
-from mtcnn import MTCNN
-import pandas as pd
+import numpy as np
+import tensorflow as tf
+import tensorflow_hub as hub
 
 app = Flask(__name__)
 
-# Function to detect faces in the image using MTCNN
-def detect_faces(image_path):
-    # Load the MTCNN detector
-    detector = MTCNN()
-    
+# Load pre-trained skin tone classification model from TensorFlow Hub
+skin_tone_model = hub.load("https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/feature_vector/5")
+
+# Function to classify skin tone in the image
+def classify_skin_tone(image_path):
     # Read the input image
     image = cv2.imread(image_path)
     
-    # Convert the image to RGB format (if not already in RGB)
+    # Resize image to match model input size (224x224)
+    image = cv2.resize(image, (224, 224))
+    
+    # Convert image to RGB format
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
-    # Detect faces in the image
-    faces = detector.detect_faces(image_rgb)
+    # Preprocess image for model input
+    image_preprocessed = image_rgb / 255.0  # Normalize pixel values
     
-    # Extract additional information about the detected faces
-    face_details = []
-    for result in faces:
-        x, y, w, h = result['box']
-        confidence = result['confidence']
-        keypoints = result['keypoints']
-        
-        # Additional information such as confidence score and facial keypoints
-        face_info = {
-            'box': (x, y, w, h),
-            'confidence': confidence,
-            'keypoints': keypoints
-        }
-        
-        face_details.append(face_info)
+    # Expand dimensions to match model input shape
+    image_input = np.expand_dims(image_preprocessed, axis=0)
     
-    # Draw rectangles around the detected faces
-    for face_info in face_details:
-        x, y, w, h = face_info['box']
-        cv2.rectangle(image_rgb, (x, y), (x+w, y+h), (255, 0, 0), 2)
+    # Perform skin tone classification
+    skin_tone_logits = skin_tone_model(image_input)
     
-    # Save the output image with bounding boxes
-    output_image_path = 'static/output.jpg'
-    cv2.imwrite(output_image_path, cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR))
+    # Convert logits to probabilities
+    skin_tone_probabilities = tf.nn.softmax(skin_tone_logits)
     
-    # Save face details to an Excel file
-    excel_file_path = 'static/face_details.xlsx'
-    df = pd.DataFrame(face_details)
-    df.to_excel(excel_file_path, index=False)
+    # Get the predicted skin tone category
+    predicted_skin_tone = np.argmax(skin_tone_probabilities)
     
-    return output_image_path, excel_file_path
+    # Define skin tone categories (example)
+    skin_tone_categories = ["Light", "Medium", "Dark"]
+    
+    # Get the predicted skin tone category label
+    predicted_skin_tone_label = skin_tone_categories[predicted_skin_tone]
+    
+    return predicted_skin_tone_label
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_image():
@@ -70,11 +62,11 @@ def upload_image():
             file_path = 'static/uploaded_image.jpg'
             file.save(file_path)
             
-            # Detect faces in the uploaded image and save details to Excel
-            output_image_path, excel_file_path = detect_faces(file_path)
+            # Classify skin tone in the uploaded image
+            predicted_skin_tone = classify_skin_tone(file_path)
             
             # Display the results
-            return render_template('index.html', image_file=output_image_path, excel_file=excel_file_path)
+            return render_template('index.html', message=f'Predicted skin tone: {predicted_skin_tone}')
 
     return render_template('index.html')
 
