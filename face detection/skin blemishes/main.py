@@ -10,7 +10,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 RESULT_FOLDER = 'results'  # Create a separate folder for result images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-model_path = 'best.pt'
+model_path = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/best.pt'
 
 # Load the pre-trained YOLOv5 model
 model = YOLO(model_path)
