@@ -2,28 +2,55 @@ from flask import Flask, render_template, request, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
 from ultralytics import YOLO
 import os
-from io import BytesIO
-from PIL import Image
+import json
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
-RESULT_FOLDER = 'results'  # Create a separate folder for result images
+RESULT_FOLDER = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/results'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-model_path = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/best.pt'
+MODEL_PATH = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/best.pt'
 
 # Load the pre-trained YOLOv5 model
-model = YOLO(model_path)
+model = YOLO(MODEL_PATH)
 
 def inference(image_path, result_folder):
-    # Run inference on a single image
-    results = model(image_path)
-    for result in results:
-        boxes = result.boxes  # Boxes object for bounding box outputs
-        masks = result.masks  # Masks object for segmentation masks outputs
-        keypoints = result.keypoints  # Keypoints object for pose outputs
-        probs = result.probs  # Probs object for classification outputs
-        result.save(filename=os.path.join(result_folder, 'result.jpg'))  # Save with a specific name
+    try:
+        # Run inference on a single image
+        results = model(image_path)
+        result_data = []
+
+        for i, result in enumerate(results):
+            result_image_path = os.path.join(result_folder, f'result_{i}.jpg')
+            result.save(filename=result_image_path)
+            result_info = {
+                "image_path": result_image_path,
+                "detections": []
+            }
+
+            for det in result.pred:
+                # Extract class label and confidence
+                class_label = model.names[int(det[-1])]
+                confidence = det[-2]
+
+                # Store detection information
+                detection_info = {
+                    "class": class_label,
+                    "confidence": confidence,
+                    "box": det[:4].tolist()  # Convert to list to serialize in JSON
+                }
+                result_info["detections"].append(detection_info)
+
+            result_data.append(result_info)
+
+        # Serialize the result data to JSON
+        json_data = json.dumps(result_data, indent=4)
+        with open(os.path.join(result_folder, 'result.json'), 'w') as json_file:
+            json_file.write(json_data)
+
+    except Exception as e:
+        print(f"Error during inference: {e}")
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -43,15 +70,19 @@ def upload():
         return redirect(url_for('index'))
 
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(file_path)
+        try:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
 
-        # Perform inference on the uploaded image and save with a specific name
-        inference(file_path, RESULT_FOLDER)
+            # Perform inference on the uploaded image
+            inference(file_path, RESULT_FOLDER)
 
-        # Optionally, you can return a response or redirect to a different page
-        return redirect(url_for('result'))
+            # Redirect to the result page
+            return redirect(url_for('result'))
+        except Exception as e:
+            print(f"Error during file upload or inference: {e}")
+            return redirect(url_for('index'))
 
     return redirect(url_for('index'))
 
@@ -61,7 +92,7 @@ def result():
 
 @app.route('/display_result')
 def display_result():
-    result_image_path = os.path.join(RESULT_FOLDER, 'result.jpg')
+    result_image_path = os.path.join(RESULT_FOLDER, 'result_0.jpg')
     return send_file(result_image_path, mimetype='image/jpeg')
 
 if __name__ == '__main__':
