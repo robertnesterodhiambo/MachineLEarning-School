@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, render_template
 from tensorflow import keras
 
 app = Flask(__name__)
-model = keras.models.load_model('/home/dragon/repos/MachineLEarning-School/face detection/skin_disease_detection_model.h5')
+model = keras.models.load_model('skin_disease_detection_model.h5')
 target_size = (224, 224)  # Adjust based on your model's input shape
 
 def preprocess_image(image):
