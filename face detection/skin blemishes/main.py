@@ -7,9 +7,9 @@ import json
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
-RESULT_FOLDER = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/results'
+RESULT_FOLDER = '/home/dragon/repos/MachineLEarning-School/face detection/skin blemishes/results'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-MODEL_PATH = '/home/oem/repos/MachineLEarning-School/face detection/skin blemishes/best.pt'
+MODEL_PATH = '/home/dragon/repos/MachineLEarning-School/face detection/skin blemishes/best.pt'
 
 # Load the pre-trained YOLOv5 model
 model = YOLO(MODEL_PATH)
