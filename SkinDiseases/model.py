@@ -1,9 +1,11 @@
 # src/model.py
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import os
 
 # Load the saved model
-model_path = 'best_skin_disease_model.h5'  # Update this if your model has a different name or path
+model_path = '/home/dragon/Git/model/best_skin_disease_model.h5'
 model = load_model(model_path)
 
 # Print the model architecture
@@ -35,3 +37,20 @@ print(model.metrics_names)
 # Print the total number of parameters in the model
 print("\nTotal Parameters:")
 print(f"Trainable: {model.count_params()}")
+
+# Directory paths for the validation/test data
+data_dir = os.path.expanduser('~/Git/MachineLEarning-School/SkinDiseases/skin-disease-datasaet')
+val_dir = os.path.join(data_dir, 'test_set')
+
+# Data preprocessing
+val_datagen = ImageDataGenerator(rescale=1.0/255)
+val_generator = val_datagen.flow_from_directory(
+    val_dir,
+    target_size=(150, 150),
+    batch_size=32,
+    class_mode='categorical'
+)
+
+# Evaluate the model on the validation/test set and print accuracy
+loss, accuracy = model.evaluate(val_generator)
+print(f"\nModel Accuracy: {accuracy * 100:.2f}%")
