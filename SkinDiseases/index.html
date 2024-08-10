@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Skin Disease Detection</h1>
+    
+    <!-- Upload Image Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept="image/*" required>
+        <button type="submit">Upload and Detect</button>
+    </form>
+
+    <div id="result"></div>
+
+    <!-- Live Camera Detection (Optional) -->
+    <button id="liveButton" onclick="startLiveDetection()">Start Live Detection</button>
+
+    <script>
+        // Handle image upload and detection
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData();
+            var fileInput = document.getElementById('fileInput').files[0];
+            formData.append('file', fileInput);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = 'Predicted Class: ' + data.predicted_class;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            });
+        });
+
+        // Handle live camera detection
+        function startLiveDetection() {
+            window.location.href = '/predict/live';
+        }
+    </script>
+</body>
+</html>
