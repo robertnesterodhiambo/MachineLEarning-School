@@ -4,10 +4,10 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QFileDialog, QVBoxLayout, QWidget
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget
+from PyQt5.QtGui import QPixmap, QImage, QPainter, QPen
 from PyQt5.QtCore import Qt
-from PIL import Image as PILImage
+from PIL import Image as PILImage, ImageDraw
 
 # Load the trained model
 model_path = '/home/dragon/Git/model/best_skin_disease_model.h5'
@@ -43,18 +43,27 @@ class SkinDiseaseApp(QMainWindow):
         
         # Create widgets
         self.label = QLabel('Detected Disease: None', self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setStyleSheet("font-size: 18px; font-weight: bold;")
+        
         self.image_label = QLabel(self)
+        self.image_label.setAlignment(Qt.AlignCenter)
         
         self.open_button = QPushButton('Open Image', self)
         self.open_button.clicked.connect(self.open_image_file)
+        self.open_button.setStyleSheet("font-size: 16px; padding: 10px;")
         
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.open_button)
-        self.layout.addWidget(self.label)
-        self.layout.addWidget(self.image_label)
+        # Layout setup
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.open_button)
+        
+        content_layout = QVBoxLayout()
+        content_layout.addWidget(self.label)
+        content_layout.addWidget(self.image_label)
+        content_layout.addLayout(button_layout)
         
         container = QWidget()
-        container.setLayout(self.layout)
+        container.setLayout(content_layout)
         self.setCentralWidget(container)
 
     def open_image_file(self):
@@ -71,7 +80,14 @@ class SkinDiseaseApp(QMainWindow):
                 
     def display_image(self, image_path):
         pil_image = PILImage.open(image_path)
-        pil_image = pil_image.resize((250, 250), PILImage.Resampling.LANCZOS)
+        pil_image = pil_image.convert("RGB")
+        
+        # Draw a border around the detected disease
+        draw = ImageDraw.Draw(pil_image)
+        border_width = 10
+        draw.rectangle([border_width, border_width, pil_image.width - border_width, pil_image.height - border_width], outline="red", width=border_width)
+        
+        pil_image = pil_image.resize((500, 500), PILImage.Resampling.LANCZOS)
         qt_image = QImage(np.array(pil_image), pil_image.width, pil_image.height, pil_image.width * 3, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qt_image)
         self.image_label.setPixmap(pixmap)
