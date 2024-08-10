@@ -90,9 +90,19 @@ tuner.search(
 best_model = tuner.get_best_models(num_models=1)[0]
 
 # Save the best model
-best_model.save('best_skin_disease_model.h5')
+best_model_path = 'best_skin_disease_model.h5'
+best_model.save(best_model_path)
+
+# Print the best hyperparameters
+print("Best hyperparameters:", tuner.get_best_hyperparameters(num_trials=1)[0].values)
 
 # Evaluate the best model
 results = best_model.evaluate(val_generator)
 print(f"Validation Loss: {results[0]}")
 print(f"Validation Accuracy: {results[1]}")
+
+# Confirm the best model was saved correctly
+if os.path.exists(best_model_path):
+    print(f"The best model has been saved to {best_model_path}.")
+else:
+    print("Error: The best model was not saved.")
