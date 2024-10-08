@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from matplotlib import pyplot as plt
 from preprocess import get_data, get_next_batch
 from cnn import CNN
-from mlp import MLP
+from mlp import MLP  # Ensure you have your MLP model implemented correctly
 
 import os
 import tensorflow as tf
@@ -10,10 +10,8 @@ import numpy as np
 import random
 import math
 
-# ensures that we run only on cpu
+# Ensures that we run only on CPU
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
-
 
 def train(model, optimizer, train_inputs, train_labels):
     '''
@@ -28,7 +26,7 @@ def train(model, optimizer, train_inputs, train_labels):
     shape (num_labels, num_classes)
     :return: None
     '''
-    #TODO: Implement the training loop
+    # TODO: Implement the training loop
     raise NotImplementedError
 
 
@@ -45,6 +43,7 @@ def test(model, test_inputs, test_labels):
     """
     # TODO: Implement the testing loop
     raise NotImplementedError
+
 
 def visualize_loss(losses):
     """
@@ -66,7 +65,7 @@ def visualize_results(image_inputs, logits, image_labels, first_label, second_la
     """
     Uses Matplotlib to visualize the correct and incorrect results of our model.
     :param image_inputs: image data from get_data(), limited to 50 images, shape (50, 32, 32, 3)
-    :param probabilities: the output of model.call(), shape (50, num_classes)
+    :param logits: the output of model.call(), shape (50, num_classes)
     :param image_labels: the labels from get_data(), shape (50, num_classes)
     :param first_label: the name of the first class, "cat"
     :param second_label: the name of the second class, "dog"
@@ -109,6 +108,7 @@ def visualize_results(image_inputs, logits, image_labels, first_label, second_la
     plotter(incorrect, 'Incorrect')
     plt.show()
 
+
 def main():
     '''
     Read in CIFAR10 data (limited to a subset), initialize your model, and train and 
@@ -128,26 +128,36 @@ def main():
     AUTOGRADER_TRAIN_FILE = '../data/train'
     AUTOGRADER_TEST_FILE = '../data/test'
 
-    LOCAL_TRAIN_FILE = ...
-    LOCAL_TEST_FILE = ...
+    LOCAL_TRAIN_FILE = './data/train'  # Adjust as necessary
+    LOCAL_TEST_FILE = './data/test'      # Adjust as necessary
 
-    # TODO: assignment.main() pt 1
     # Load your testing and training data using the get_data function
+    train_inputs, train_labels = get_data(AUTOGRADER_TRAIN_FILE)  # Adjust according to your implementation
+    test_inputs, test_labels = get_data(AUTOGRADER_TEST_FILE)  # Adjust according to your implementation
 
-    # TODO: assignment.main() pt 2
     # Initialize your model and optimizer
+    model = MLP(num_classes=train_labels.shape[1])  # Initialize MLP with number of classes
+    optimizer = tf.keras.optimizers.Adam(learning_rate=1e-3)
+
+    # Sanity check: run a batch of data through the model
+    batch_inputs = train_inputs[:32]  # Get a small batch of training data
+    logits = model(batch_inputs, training=True)  # Forward pass
+    print(f'Output shape: {logits.shape}')  # Check the output shape
 
     # TODO: assignment.main() pt 3
     # Train your model
+    for epoch in range(10):  # Train for 10 epochs
+        # Add your training loop code here (use train function)
+        pass  # Remove this line when implementing
 
     # TODO: assignment.main() pt 4
     # Test your model
+    # Add your testing code here (use test function)
 
     # TODO: assignment.main() pt 5
-    # Save your predictions as either "predictions_cnn.npy" or "predictions_mlp.npy"
-    #   depending on which model you are using
-    # You will submit these prediction files to the autograder with predictions
-    #    For the CAT, DEER, and DOG classes
+    # Save your predictions
+    # np.save('predictions_mlp.npy', predictions)  # Adjust as necessary
+
     return
 
 

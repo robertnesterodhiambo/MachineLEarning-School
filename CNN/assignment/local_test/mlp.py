@@ -12,7 +12,6 @@ import math
 # ensures that we run only on cpu
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
-
 class MLP(CifarModel):
     def __init__(self, classes):
         """
@@ -26,20 +25,35 @@ class MLP(CifarModel):
         # Initialize all hyperparameters
         self.loss_list = []
         self.batch_size = 64
-        self.input_width = ???
-        self.input_height = ???
-        self.image_channels = ???
+        self.input_width = 32   # Width of the input images
+        self.input_height = 32  # Height of the input images
+        self.image_channels = 3  # Number of channels in the images (RGB)
         self.num_classes = len(classes)
         self.hidden_layer_size = 128
         
-        # TODO mlp.MLP.__init__(): Initialize your Layers here.
+        # Initialize your Layers here.
+        self.flatten = tf.keras.layers.Flatten()
+        self.dense1 = tf.keras.layers.Dense(self.hidden_layer_size, activation='relu')
+        self.dense2 = tf.keras.layers.Dense(self.num_classes)  # Output layer
 
     def call(self, inputs, is_testing=False):
         """
         Runs a forward pass on an input batch of images.
-        :param inputs: images, shape of (num_inputs, 32, 32, 3); during training, the shape is (batch_size, 32, 32, 3)
-        :param is_testing: a boolean that should be set to True only when you're doing Part 2 of the assignment and this function is being called during testing
-        :return: logits - a matrix of shape (num_inputs, num_classes); during training, it would be (batch_size, 2)
+        :param inputs: images, shape of (num_inputs, 32, 32, 3);
+                       during training, the shape is (batch_size, 32, 32, 3)
+        :param is_testing: a boolean that should be set to True only when
+                           you're doing Part 2 of the assignment and this
+                           function is being called during testing
+        :return: logits - a matrix of shape (num_inputs, num_classes);
+                 during training, it would be (batch_size, num_classes)
         """
-        # TODO mlp.MLP.call(): Implement your forward pass here.
-        raise NotImplementedError("Implement me!")
+        # Flatten the input images
+        x = self.flatten(inputs)
+        
+        # Pass through the first dense layer
+        x = self.dense1(x)
+        
+        # Output logits through the second dense layer
+        logits = self.dense2(x)
+        
+        return logits
