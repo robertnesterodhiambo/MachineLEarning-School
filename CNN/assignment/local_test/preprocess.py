@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 import os
 
+
 def unpickle(file) -> dict[str, np.ndarray]:
     """
     CIFAR data contains the files data_batch_1, data_batch_2, ..., 
@@ -18,12 +19,14 @@ def unpickle(file) -> dict[str, np.ndarray]:
         dict = pickle.load(fo, encoding='bytes')
     return dict
 
+
 def get_next_batch(idx, inputs, labels, batch_size=100) -> tuple[np.ndarray, np.ndarray]:
     """
     Given an index, returns the next batch of data and labels. Ex. if batch_size is 5, 
     the data will be a numpy matrix of size 5 * 32 * 32 * 3, and the labels returned will be a numpy matrix of size 5 * 10.
     """
     return (inputs[idx*batch_size:(idx+1)*batch_size], np.array(labels[idx*batch_size:(idx+1)*batch_size]))
+
 
 def get_data(file_path, classes) -> tuple[np.ndarray, tf.Tensor]:
     """
@@ -53,11 +56,14 @@ def get_data(file_path, classes) -> tuple[np.ndarray, tf.Tensor]:
     filtered_inputs = inputs[mask]   # Apply mask to filter inputs
     filtered_labels = labels[mask]   # Apply mask to filter labels
 
-    # Reshape the inputs to (num_samples, 32, 32, 3)
-    filtered_inputs = filtered_inputs.reshape(-1, 32, 32, 3)
+    # Reshape the inputs to (num_samples, 3, 32, 32) first
+    filtered_inputs = filtered_inputs.reshape(-1, 3, 32, 32)  # Reshape to (num_samples, 3, 32, 32)
 
     # Normalize the input images (scale pixel values from 0-255 to 0-1)
     normalized_inputs = filtered_inputs.astype(np.float32) / 255.0
+
+    # Transpose to get the shape (num_samples, 32, 32, 3)
+    normalized_inputs = np.transpose(normalized_inputs, (0, 2, 3, 1))  # Transpose to (num_samples, 32, 32, 3)
 
     # One-hot encode the labels using tf.one_hot
     one_hot_labels = tf.one_hot(filtered_labels, depth=len(classes))
