@@ -76,7 +76,7 @@ def get_data(file_path, classes) -> tuple[np.ndarray, tf.Tensor]:
     # Return the filtered and normalized inputs and labels
     return normalized_inputs, one_hot_labels
 
-# Example usage of get_data (this would be part of your main training/testing script)
+
 if __name__ == "__main__":
     # Path to the dataset
     train_file_path = "data/train"
