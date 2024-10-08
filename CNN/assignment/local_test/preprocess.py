@@ -65,8 +65,13 @@ def get_data(file_path, classes) -> tuple[np.ndarray, tf.Tensor]:
     # Transpose to get the shape (num_samples, 32, 32, 3)
     normalized_inputs = np.transpose(normalized_inputs, (0, 2, 3, 1))  # Transpose to (num_samples, 32, 32, 3)
 
+    # Renumber the labels to be in the range [0, num_classes)
+    unique_classes = np.unique(filtered_labels)
+    class_mapping = {old_label: new_label for new_label, old_label in enumerate(unique_classes)}
+    renumbered_labels = np.array([class_mapping[label] for label in filtered_labels])
+
     # One-hot encode the labels using tf.one_hot
-    one_hot_labels = tf.one_hot(filtered_labels, depth=len(classes))
+    one_hot_labels = tf.one_hot(renumbered_labels, depth=len(unique_classes))
 
     # Return the filtered and normalized inputs and labels
     return normalized_inputs, one_hot_labels
