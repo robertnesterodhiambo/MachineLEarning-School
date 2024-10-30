@@ -1,0 +1,185 @@
+
+### 1. Load and Split the Data
+
+```{r}
+# Load necessary libraries
+library(datasets)
+library(caret)
+library(rpart)
+library(randomForest)
+
+# Load the Iris dataset
+data(iris)
+
+# Split the dataset into training and testing sets
+set.seed(42)
+trainIndex <- createDataPartition(iris$Species, p = 0.7, list = FALSE)
+trainData <- iris[trainIndex, ]
+testData <- iris[-trainIndex, ]
+```
+
+### 2. Train the Decision Tree Model
+
+```{r}
+# Train a Decision Tree model
+dt_model <- rpart(Species ~ ., data = trainData, method = "class")
+
+# Predict on the test set
+dt_predictions <- predict(dt_model, testData, type = "class")
+```
+
+
+### secon desion tree
+
+```{r}
+# Load necessary libraries
+library(rpart)
+library(rpart.plot)
+library(caret)
+
+# Load the Iris dataset
+data(iris)
+
+# Split the dataset into training and testing sets
+set.seed(123)
+train_index <- createDataPartition(iris$Species, p = 0.8, list = FALSE)
+train_data <- iris[train_index, ]
+test_data <- iris[-train_index, ]
+
+# Decision Tree Model 1 (using Sepal.Length and Sepal.Width for the first split)
+model1 <- rpart(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, 
+                data = train_data, method = "class")
+rpart.plot(model1)
+
+# Decision Tree Model 2 (using Petal.Length and Petal.Width for the first split)
+model2 <- rpart(Species ~ Petal.Length + Petal.Width + Sepal.Length + Sepal.Width, 
+                data = train_data, method = "class")
+rpart.plot(model2)
+
+# Random Forest Model
+library(randomForest)
+rf_model <- randomForest(Species ~ ., data = train_data)
+
+# Predictions
+predictions_model1 <- predict(model1, test_data, type = "class")
+predictions_model2 <- predict(model2, test_data, type = "class")
+predictions_rf <- predict(rf_model, test_data)
+
+# Confusion Matrix and Accuracy
+confusion_matrix1 <- confusionMatrix(predictions_model1, test_data$Species)
+confusion_matrix2 <- confusionMatrix(predictions_model2, test_data$Species)
+confusion_matrix_rf <- confusionMatrix(predictions_rf, test_data$Species)
+
+# Display Results
+confusion_matrix1
+confusion_matrix2
+confusion_matrix_rf
+
+```
+
+
+### 3. Train the Random Forest Model
+
+```{r}
+# Train a Random Forest model
+rf_model <- randomForest(Species ~ ., data = trainData, ntree = 100)
+
+# Predict on the test set
+rf_predictions <- predict(rf_model, testData)
+```
+
+### 4. Evaluate Model Accuracy
+
+```{r}
+# Calculate accuracy for Decision Tree
+dt_accuracy <- mean(dt_predictions == testData$Species)
+cat("Decision Tree Model Accuracy:", dt_accuracy, "\n")
+
+# Calculate accuracy for Random Forest
+rf_accuracy <- mean(rf_predictions == testData$Species)
+cat("Random Forest Model Accuracy:", rf_accuracy, "\n")
+```
+
+### 5. Calculate MSE and RMSE
+
+Since MSE and RMSE are typically used in regression, we will convert the factors to numeric values for calculation purposes.
+
+```{r}
+# Convert Species factors to numeric for MSE and RMSE calculation
+true_labels <- as.numeric(testData$Species)
+dt_pred_numeric <- as.numeric(dt_predictions)
+rf_pred_numeric <- as.numeric(rf_predictions)
+
+# Calculate MSE and RMSE for Decision Tree
+dt_mse <- mean((dt_pred_numeric - true_labels)^2)
+dt_rmse <- sqrt(dt_mse)
+cat("Decision Tree MSE:", dt_mse, "\n")
+cat("Decision Tree RMSE:", dt_rmse, "\n")
+
+# Calculate MSE and RMSE for Random Forest
+rf_mse <- mean((rf_pred_numeric - true_labels)^2)
+rf_rmse <- sqrt(rf_mse)
+cat("Random Forest MSE:", rf_mse, "\n")
+cat("Random Forest RMSE:", rf_rmse, "\n")
+```
+
+### 6. Summary of Model Comparison
+
+
+
+```{r}
+cat("\nModel Comparison Summary:\n")
+cat("Decision Tree Accuracy:", dt_accuracy, "\n")
+cat("Random Forest Accuracy:", rf_accuracy, "\n")
+
+cat("Decision Tree MSE:", dt_mse, " RMSE:", dt_rmse, "\n")
+cat("Random Forest MSE:", rf_mse, " RMSE:", rf_rmse, "\n")
+
+if (rf_rmse < dt_rmse) {
+  cat("Random Forest performs better based on RMSE.\n")
+} else if (dt_rmse < rf_rmse) {
+  cat("Decision Tree performs better based on RMSE.\n")
+} else {
+  cat("Both models have the same RMSE.\n")
+}
+```
+
+
+```{r}
+# Load necessary libraries
+library(datasets)
+library(caret)
+library(rpart)
+library(randomForest)
+library(rpart.plot) # For Decision Tree visualization
+library(ggplot2)    # For plotting
+
+
+
+# Visualization of Decision Tree
+rpart.plot(dt_model, main = "Decision Tree for Iris Dataset")
+
+# Visualization of Model Predictions
+prediction_data <- data.frame(
+  True = testData$Species,
+  DT_Predicted = dt_predictions,
+  RF_Predicted = rf_predictions
+)
+
+# Melt the data for ggplot2
+library(reshape2)
+prediction_melted <- melt(prediction_data, id.vars = "True")
+
+# Plot predictions
+ggplot(prediction_melted, aes(x = True, fill = value)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Comparison of Predictions by Decision Tree and Random Forest",
+       x = "True Species",
+       y = "Count",
+       fill = "Predicted Species") +
+  facet_wrap(~ variable, ncol = 1) +
+  theme_minimal()
+
+
+```
+
